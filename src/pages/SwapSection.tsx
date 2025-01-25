@@ -1,15 +1,17 @@
+import DexSwapFlow from "../components/swap";
+
 export const SwapSection = () => (
   <div className="p-4">
     <div className="bg-white rounded-lg p-4 shadow relative overflow-hidden">
       {/* Coming Soon Overlay */}
-      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+      {/* <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
         <span className="text-xl font-semibold text-green-700">Coming Soon</span>
         <p className="text-sm text-gray-600 mt-2">Swapping will be available shortly</p>
-      </div>
+      </div> */}
 
       {/* Base Swap Interface (Blurred) */}
-      <h2 className="text-lg font-semibold mb-4">Swap Tokens</h2>
-      <div className="space-y-4">
+      {/* <h2 className="text-lg font-semibold mb-4">Swap Tokens</h2> */}
+      {/* <div className="space-y-4">
         <div className="p-3 border rounded">
           <label className="text-sm text-gray-600">From</label>
           <div className="flex items-center gap-2">
@@ -60,7 +62,8 @@ export const SwapSection = () => (
         >
           Swap
         </button>
-      </div>
+      </div> */}
     </div>
+    <DexSwapFlow />
   </div>
 );
