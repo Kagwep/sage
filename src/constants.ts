@@ -1,4 +1,5 @@
 import { AppKitNetwork, defineChain } from '@reown/appkit/networks';
+import WETHabi from "./assets/weth.json"
 
 
 // Properly type the Lisk network
@@ -145,3 +146,8 @@ export const ERC20_ABI = [
       "type": "event"
     }
   ] as const;
+
+  export const ETHCONTRACTADDRESS = '0x0000000000000000000000000000000000000000'
+
+
+  export const WETHABI = WETHabi;
