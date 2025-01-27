@@ -1,5 +1,7 @@
 import { AppKitNetwork, defineChain } from '@reown/appkit/networks';
 import WETHabi from "./assets/weth.json"
+import LISKabi from "./assets/liskstaking.json"
+import LISKTOKENAbi from "./assets/lisk.json"
 
 
 // Properly type the Lisk network
@@ -151,3 +153,13 @@ export const ERC20_ABI = [
 
 
   export const WETHABI = WETHabi;
+
+  export const LISK_TOKEN = "0xac485391EB2d7D88253a7F1eF18C37f4242D1A24";
+
+
+  export const LISKSTAKINGABI = LISKabi;
+
+  export const STAKINGREWARDS = "0xD35ca9577a9DADa7624a35EC10C2F55031f0Ab1f";
+
+
+  export const LISKTOKENABI = LISKTOKENAbi;

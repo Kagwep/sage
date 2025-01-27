@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import StakingInterface from '../components/Staking';
 
 // Define types for our earning opportunities
 type EarningOption = {
@@ -37,12 +38,12 @@ export const EarnSection = () => {
   return (
     <div className="p-4">
       <h2 className="text-xl font-semibold mb-4">Earning Opportunities</h2>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="">
         {earningOptions.map((option) => (
           <div
             key={option.id}
             className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer"
-            onClick={() => handleCardClick(option)}
+           
           >
             <div className="flex items-start justify-between mb-2">
               <h3 className="font-semibold">{option.title}</h3>
@@ -67,15 +68,7 @@ export const EarnSection = () => {
               ))}
             </div>
 
-            <button 
-              className="w-full bg-green-700 text-white py-2 rounded hover:bg-green-800 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleCardClick(option);
-              }}
-            >
-              {option.buttonText}
-            </button>
+            <StakingInterface />
           </div>
         ))}
       </div>

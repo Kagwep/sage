@@ -76,28 +76,32 @@ const ChainSelector: React.FC<ChainSelectorProps> = ({
   label 
 }) => {
   return (
-    <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label}
-      </label>
-      <div className="relative">
-        <select
-          value={selectedChain?.chainId || ''}
-          onChange={(e) => {
-            const chain = chains.find(c => c.chainId === Number(e.target.value));
-            if (chain) onSelect(chain);
-          }}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">Select a chain</option>
-          {chains.map((chain) => (
-            <option key={chain.chainId} value={chain.chainId}>
-              {chain.name}
-            </option>
-          ))}
-        </select>
-      </div>
-    </div>
+<div className="w-full">
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    {label}
+  </label>
+  <div className="relative">
+    <select
+      value={selectedChain?.chainId || ''}
+      onChange={(e) => {
+        const chain = chains?.find(c => c.chainId === Number(e.target.value));
+        if (chain) onSelect(chain);
+      }}
+      className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="">Select a chain</option>
+      {chains?.length > 0 ? (
+        chains.map((chain) => (
+          <option key={chain.chainId} value={chain.chainId}>
+            {chain.name}
+          </option>
+        ))
+      ) : (
+        <option value="" disabled>No chains available</option>
+      )}
+    </select>
+  </div>
+</div>
   );
 };
 
