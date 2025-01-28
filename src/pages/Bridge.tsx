@@ -409,8 +409,7 @@ const BridgeComponent: React.FC = () => {
       setLoading(true);
       setError('');
 
-    
-
+  
       
       try {
 

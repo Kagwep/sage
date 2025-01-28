@@ -23,6 +23,13 @@ export  const formatAmount = (amount: string, decimals: number): string => {
   return (BigInt(Math.floor(parseFloat(amount) * (10 ** decimals))).toString());
 };
 
+export const formatAmountB = (amount: string, decimals: number): bigint => {
+  if (!amount || decimals == null) return BigInt(0);
+  const multiplier = BigInt(10) ** BigInt(decimals);
+  return BigInt(Math.floor(parseFloat(amount) * Number(multiplier)));
+};
+
+
 export function truncateHexString(string: Hex) {
   return `${string.slice(0, 6)}...${string.slice(-5)}`;
 }
@@ -251,3 +258,8 @@ export const validateTransaction = (completion: any, supportedChains: any) => {
     })
   }
   
+
+  export  const isWrapOperation = (fromToken: TokenInfo | null,toToken: TokenInfo | null) => {
+    return (fromToken?.symbol === 'ETH' && toToken?.symbol === 'WETH') ||
+          (fromToken?.symbol === 'WETH' && toToken?.symbol === 'ETH');
+  };

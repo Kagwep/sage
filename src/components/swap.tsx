@@ -6,9 +6,11 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
   useReadContract,
-  useWalletClient
+  useWalletClient,
+  useChains,
+  usePublicClient
 } from 'wagmi';
-import { parseUnits, formatUnits, erc20Abi, getContract } from 'viem';
+import { parseUnits, formatUnits, erc20Abi, getContract, ByteArray } from 'viem';
 
 import { ExecutionInfo, ExecutionInfoRequest, SwapQuote, Token } from '../types';
 import { waitForTransactionReceipt } from 'viem/actions';
@@ -17,6 +19,7 @@ import { TokenInfo } from '@across-protocol/app-sdk';
 import { ETHCONTRACTADDRESS, WETHABI } from '../constants';
 import { CheckCircle, Loader2 } from 'lucide-react';
 import TokenSelector from './TokenSelector';
+import { isWrapOperation } from '../utils';
 
 
  function DexSwapFlow() {
@@ -36,6 +39,8 @@ import TokenSelector from './TokenSelector';
   const [fromToken, setFromToken] = useState<TokenInfo | null>(null);
   const [toToken, setToToken] = useState<TokenInfo | null>(null);
 
+  const publicClient = usePublicClient();
+  const chain = publicClient.chain;
 
   const { supportedChains } = useSupportedAcrossChains({});
 
@@ -90,13 +95,10 @@ import TokenSelector from './TokenSelector';
     return tokens;
   };
 
-        const isWrapOperation = () => {
-          return (fromToken?.symbol === 'ETH' && toToken?.symbol === 'WETH') ||
-                (fromToken?.symbol === 'WETH' && toToken?.symbol === 'ETH');
-        };
 
 
-        const { data: allowance } = useReadContract({
+
+     const { data: allowance } = useReadContract({
           address: fromToken?.address as `0x${string}`,
           abi: erc20Abi,
           functionName: 'allowance',
@@ -160,7 +162,9 @@ import TokenSelector from './TokenSelector';
          abi: WETHABI,
          functionName: fromToken.symbol === 'ETH' ? 'deposit' : 'withdraw',
          args: fromToken.symbol === 'ETH' ? [] : [parsedAmount],
-         value: fromToken.symbol === 'ETH' ? parsedAmount : 0n
+         value: fromToken.symbol === 'ETH' ? parsedAmount : 0n,
+         chain: chain,
+         account: address
        });
     
        setSwapTxHash(hash);
@@ -222,7 +226,9 @@ import TokenSelector from './TokenSelector';
         args: [
           swapQuote.coupon.raw.quote.permit2.domain.verifyingContract as `0x${string}`,
           BigInt(swapQuote.coupon.raw.quote.permit2.message.details.amount)
-        ]
+        ],
+        chain: chain,
+        account: address
       });
       
       setApprovalStatus('pending');
@@ -261,7 +267,8 @@ import TokenSelector from './TokenSelector';
         },
         types: formattedTypes,
         primaryType: typedData.primaryType,
-        message: typedData.message as unknown as Record<string, unknown>
+        message: typedData.message as unknown as Record<string, unknown>,
+        account: address
       });
 
       setSignature(sig);
@@ -285,7 +292,10 @@ import TokenSelector from './TokenSelector';
       const hash = await walletClient.sendTransaction({
         to: executionInfo.trade.to as `0x${string}`,
         data: executionInfo.trade.data as `0x${string}`,
-        value: executionInfo.trade.value ? BigInt(executionInfo.trade.value) : 0n
+        value: executionInfo.trade.value ? BigInt(executionInfo.trade.value) : 0n,
+        kzg:undefined,
+        account: address,
+        chain: chain
       });
       setSwapTxHash(hash);
       setSwapQuote(null);
@@ -343,11 +353,11 @@ import TokenSelector from './TokenSelector';
           </form>
         {/* Get Quote Button */}
         <button
-          onClick={isWrapOperation() ? handleWrap : fetchQuote}
+          onClick={isWrapOperation(fromToken,toToken) ? handleWrap : fetchQuote}
           disabled={loading || !inputAmount}
           className="w-full py-2 px-4 bg-blue-600 text-white rounded-md disabled:bg-gray-400"
         >
-          {loading ? 'Loading...' : isWrapOperation() ? 'Wrap' : 'Get Quote'}
+          {loading ? 'Loading...' : isWrapOperation(fromToken, toToken) ? 'Wrap' : 'Get Quote'}
         </button>
 
         <div className="p-4 bg-gray-50 rounded-md space-y-2">
@@ -385,7 +395,7 @@ import TokenSelector from './TokenSelector';
         )}
 
         {/* Only show approval status for regular swaps, not for wrapping operations */}
-        {approvalTxHash && fromToken?.symbol !== 'ETH' && !isWrapOperation() && (
+        {approvalTxHash && fromToken?.symbol !== 'ETH' && !isWrapOperation(fromToken,toToken) && (
           <div className="p-4 bg-gray-50 rounded-md">
             <p className="text-sm break-all">Approval Hash: {approvalTxHash}</p>
             <p>{isApprovalConfirmed ? 'Approval complete' : 'Confirming approval...'}</p>

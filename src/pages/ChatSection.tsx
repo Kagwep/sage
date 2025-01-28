@@ -4,16 +4,16 @@
 import React, { useState, KeyboardEvent, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import axios from "axios";
-import { useAccount, useReadContract, useWriteContract, usePublicClient, useWalletClient,useChainId, useChains, useConfig, useSwitchChain ,} from 'wagmi';
+import { useAccount, useReadContract, useWriteContract, usePublicClient, useWalletClient,useChainId, useChains, useConfig, useSwitchChain, useWaitForTransactionReceipt ,} from 'wagmi';
 import { ERC20_ABI, PARAMETER_EXTRACTION, tokensAll } from '../constants';
-import TransactionModal, { findTokenBySymbol } from './TransactionModal';
+import TransactionModal  from './TransactionModal';
 import { v4 as uuidv4 } from 'uuid';
 import { routeConfig, STAKE_CONTRACT, stakeToken } from "../utils/stake";
-import { createAcrossClient, DepositStatus, FillStatus } from "@across-protocol/app-sdk";
+import { createAcrossClient, DepositStatus, FillStatus, TokenInfo } from "@across-protocol/app-sdk";
 import toast from 'react-hot-toast';
 import { formatEther, Hash, parseUnits } from 'viem';
 import { useSupportedAcrossChains } from '../hooks/useSupportedAcrossChains';
-import { formatAmount, handleBridgeProgress, validateTransaction } from '../utils';
+import { formatAmount, formatAmountB, handleBridgeProgress, validateTransaction } from '../utils';
 import { MAINNET_SUPPORTED_CHAINS } from '../utils/chains';
 import { mainnet } from "viem/chains";
 import { getWalletClient } from "wagmi/actions";
@@ -37,7 +37,9 @@ const shortenString = (str: string, chars: number = 4) => {
   return `${str.substring(0, chars)}...${str.substring(str.length - chars)}`;
 };
 
-
+const findTokenBySymbol = (symbolToFind: string, tokens: TokenInfo[]): TokenInfo | undefined => {
+  return tokens.find(token => token.symbol.toLowerCase() === symbolToFind.toLowerCase());
+};
 
 export const ChatSection = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -60,17 +62,39 @@ export const ChatSection = () => {
   const config = useConfig();
   const chains = useChains();
   const sdk = useAcross();
-      const [txHash, setTxHash] = useState<Hash>();
-      const [destinationBlock, setDestinationBlock] = useState<bigint>();
-      const [depositData, setDepositData] = useState<DepositStatus>();
-      const [fillData, setFillData] = useState<FillStatus>();
-  
-      const [loadingDeposit, setLoadingDeposit] = useState(false);
-      const [loadingFill, setLoadingFill] = useState(false);
+  const [txHash, setTxHash] = useState<Hash>();
+  const [destinationBlock, setDestinationBlock] = useState<bigint>();
+  const [depositData, setDepositData] = useState<DepositStatus>();
+  const [fillData, setFillData] = useState<FillStatus>();
+
+  const [loadingDeposit, setLoadingDeposit] = useState(false);
+  const [loadingFill, setLoadingFill] = useState(false);
 
   const { writeContractAsync } = useWriteContract();
 
+    //   // Monitor approval status
+    // const { isLoading: isApprovalConfirming, isSuccess: isApprovalConfirmed } = useWaitForTransactionReceipt({
+    //   hash: approvalTxHash as `0x${string}`,
+    // });
+
+    // // Monitor swap status
+    // const { 
+    //   isLoading: isSwapConfirming, 
+    //   isSuccess: isSwapConfirmed,
+    //   isError: isSwapError,
+    //   error: swapError 
+    // } = useWaitForTransactionReceipt({
+    //   hash: swapTxHash as `0x${string}`,
+    // });
+
+
+    
+  // Fixed destination chain (Lisk)
+  const destinationChain = supportedChains?.find(chain => chain.chainId === 1135);
+
   //const { executeQuote, progress } = useExecuteQuote();
+
+  const tokens = destinationChain?.inputTokens ?? [];
 
   const { address } = useAccount();
   const handleTransactionResponse = (apiResponse: any) => {
@@ -185,7 +209,7 @@ export const ChatSection = () => {
               return false;
             }
     
-            const toCheckBalance = findTokenBySymbol(token_check, tokensAll);
+            const toCheckBalance = findTokenBySymbol(token_check, tokens);
             if (!toCheckBalance) {
               toast.error("Invalid token");
               return false;
@@ -210,16 +234,60 @@ export const ChatSection = () => {
             };
 
             case 'transfer':
-              
+              const { token1: token_send, address,amount } = completion;
+
+              if (!token_send) {
+                toast.error("Please provide token to check");
+                return false;
+              }
+      
+              const toCheckSend = findTokenBySymbol(token_send, tokens);
+              if (!toCheckSend) {
+                toast.error("Invalid token");
+                return false;
+              }
+
+
+              const parsedAmount = formatAmountB(amount, toCheckSend.decimals)
+
+              if (parsedAmount <= 0n){
+                toast.error("Invalid amount");
+                return false;
+              }
+
+              const toastId1 = toast.loading("sending ...");
+
+
+              toast.dismiss(toastId1);
+
+                try {
+  
+                  const  hash  = await writeContractAsync({
+                    address: toCheckSend.address as `0x${string}`,
+                    abi: ERC20_ABI,
+                    functionName: 'transfer',
+                    args: [address as `0x${string}`, parsedAmount],
+                    chain: undefined,
+                    account: address 
+                  });
+                
+                  toast.dismiss(toastId1);
+                  toast.success(`Transaction submitted: ${hash}`);
+                  
+                } catch (error) {
+                  toast.dismiss(toastId1);
+                  toast.error(`Failed to send tokens: ${(error as Error).message}`);
+                  
+                }
+
                 break;
 
-            case 'approve':
-                
-                break;
+            // case 'approve':
+            //     break;
 
-            case 'deploy':
+            // case 'deploy':
                 
-                break;
+            //     break;
 
             case 'swap':
                 
@@ -237,13 +305,16 @@ export const ChatSection = () => {
                   originChainId: data.sourceChain.chainId,
                   destinationChainId: data.destinationChain.chainId,
                 })!;
+
           
-                const route = routes.find((r) => r.inputTokenSymbol === data.token.symbol.symbol)!;
+                const route = routes.find((r) => r.inputTokenSymbol === data.token.symbol)!;
+
+             
         
                         // 1. get quote
                 const bridgeQuoteRes = await sdk.getQuote({
                   route,
-                  inputAmount: formatAmount(data.amount, data.destinationChain.decimals),
+                  inputAmount: formatAmount(data.amount, data.token.decimals),
                   recipient: address,
                 });
 
@@ -251,7 +322,7 @@ export const ChatSection = () => {
 
                 const walletClient = await getWalletClient(config);
             
-                console.log(bridgeQuoteRes)
+               
             
                 const { request } = await sdk.simulateDepositTx({
                   walletClient,
