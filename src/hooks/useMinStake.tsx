@@ -1,5 +1,5 @@
 import { useReadContract } from "wagmi";
-import { STAKE_CONTRACT } from "../stake";
+import { STAKE_CONTRACT } from "../utils/stake";
 import { formatUnits } from "viem";
 
 export function useMinStake() {

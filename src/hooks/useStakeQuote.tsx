@@ -1,8 +1,8 @@
 import { useAccount } from "wagmi";
 import { useAcross } from "../utils/across";
 import { AcrossClient, Amount } from "@across-protocol/app-sdk";
-import { generateUnwrapCallData, WETH_OPTIMISM } from "../weth";
-import { generateStakeCallData, STAKE_CONTRACT } from "../stake";
+import { generateUnwrapCallData, WETH_OPTIMISM } from "../utils/weth";
+import { generateStakeCallData, STAKE_CONTRACT } from "../utils/stake";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { buildQueryKey } from "../utils";
 

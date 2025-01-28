@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import { useAccount, usePublicClient, useReadContract, useWriteContract } from 'wagmi';
 
 const LSK_ABI = [
   {
@@ -29,6 +29,8 @@ export function LSKBalanceAndTransfer() {
   const [recipientAddress, setRecipientAddress] = useState('');
   const [amount, setAmount] = useState('');
   const { address } = useAccount();
+    const publicClient = usePublicClient();
+    const chain = publicClient.chain;
 
   const { data: balance, refetch } = useReadContract({
     address: LSK_ADDRESS,
@@ -68,6 +70,8 @@ export function LSKBalanceAndTransfer() {
         abi: LSK_ABI,
         functionName: 'transfer',
         args: [recipientAddress as `0x${string}`, amountInWei],
+        chain: chain,
+        account: address
       });
 
       setAmount('');

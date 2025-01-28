@@ -6,7 +6,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useUserStake } from "./useUserStake";
-import { STAKE_CONTRACT } from "../stake";
+import { STAKE_CONTRACT } from "../utils/stake";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { getExplorerLink } from "../utils";
@@ -73,10 +73,10 @@ export function useWithdraw() {
   return {
     canWithdraw,
     hash,
-    withdraw: () => writeContract(writeConfig),
+    withdraw: () => writeContract(writeConfig as any),
     withdrawAsync: async () => {
       await checkChain();
-      return writeContractAsync(writeConfig);
+      return writeContractAsync(writeConfig as any);
     },
     withdrawConfirmed,
     withdrawConfirming,
