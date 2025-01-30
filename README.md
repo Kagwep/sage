@@ -12,7 +12,7 @@ Sage is an decentralized finance (DeFi) application built on Lisk Layer 2, featu
 
 ### 🔄 Cross-Chain Operations
 - **Bridge**: Powered by Across Protocol
-  - Secure asset bridging between Ethereum and Lisk Layer 2
+  - Secure asset bridging between Ethereum L2's and Lisk Layer 2
   - Simple command interface: "bridge 0.001 ETH from ethereum"
   - Low fees and fast transaction times
 
