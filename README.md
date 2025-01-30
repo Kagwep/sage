@@ -1,50 +1,103 @@
-# React + TypeScript + Vite
+# Sage
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sage is an decentralized finance (DeFi) application built on Lisk Layer 2, featuring an AI agent for seamless blockchain interactions. It combines the power of artificial intelligence with DeFi operations to make cryptocurrency transactions more accessible and user-friendly.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🤖 AI Agent Interface
+- Natural language processing for executing blockchain operations
+- Simple commands like "send 0.001 ETH to [address]"
+- Intuitive interaction for swapping and bridging assets
+- No need to understand complex blockchain terminology
 
-## Expanding the ESLint configuration
+### 🔄 Cross-Chain Operations
+- **Bridge**: Powered by Across Protocol
+  - Secure asset bridging between Ethereum and Lisk Layer 2
+  - Simple command interface: "bridge 0.001 ETH from ethereum"
+  - Low fees and fast transaction times
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 💱 Token Swapping
+- **Swap Interface**: Integrated with Oku Trade
+  - Efficient token swapping capabilities
+  - Support for multiple trading pairs
+  - Competitive rates and minimal slippage
+  - Example command: "swap 0.001 ETH from ethereum"
 
-- Configure the top-level `parserOptions` property like this:
+### 💰 African Payment Gateway
+- **Onboarding Ramp**: Powered by Fonbank
+  - Specialized payment solution for African users
+  - Easy fiat-to-crypto onboarding
+  - Support for local payment methods
+  - Focused on financial inclusion
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 🌟 Earn Opportunities
+- **LSK Staking**
+  - Earn rewards by staking LSK tokens
+  - Competitive APY rates
+  - User-friendly staking interface
+  - Regular reward distributions
+
+## Getting Started
+
+1. Visit [Sage](https://sage-dusky.vercel.app/)
+2. Connect your Web3 wallet
+3. Choose your preferred operation:
+   - Use the AI interface for natural language commands
+   - Navigate to specific sections (Swap, Bridge, Earn)
+   - Access the African payment ramp
+
+## Usage Examples
+
+### AI Commands
+```
+// Sending tokens
+send 0.001 ETH to 0x123...
+
+// Bridging assets
+bridge 0.001 ETH from ethereum
+
+// Swapping tokens
+swap 0.001 ETH from ethereum
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Staking LSK
+1. Navigate to the Earn section
+2. Choose your staking amount
+3. Confirm the transaction
+4. Start earning rewards
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Technical Integration
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### Protocols Used
+- **Across Protocol**: Cross-chain bridging
+- **Oku Trade**: swapping
+- **Fonbank**: African payment solutions
+- **Lisk Layer 2**: Base blockchain infrastructure
+
+## Security
+
+- Secure wallet integration
+- Protected AI interface
+- Regular security updates
+
+## Support
+
+For technical support or questions:
+- Submit issues on GitHub
+- Join our community channels
+- Contact support team
+
+## Contributing
+
+We welcome contributions to Sage! Please see our contributing guidelines for more information on how to:
+- Submit bug reports
+- Propose new features
+- Submit pull requests
+
+## License
+
+MIT 
+
+## Disclaimer
+
+This application is in active development. Please use caution when executing financial transactions and always verify the details before confirming any operation.
