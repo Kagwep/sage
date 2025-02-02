@@ -46,7 +46,42 @@ export const ChatSection = () => {
     {
       id: '1',
       sender: 'agent',
-      text: "👋 Hi! I'm your Lisk assistant. I can help you send ,swap , check balances, and learn about Lisk's ecosystem. What would you like to know?",
+      text: "👋 Hi! I'm your Lisk assistant. I can help you send, swap, check balances, and learn about Lisk's ecosystem. What would you like to know?",
+      timestamp: new Date(),
+      mode: 'chat'
+    },
+    {
+      id: '2',
+      sender: 'agent',
+      text: "Here are some common commands you can use:",
+      timestamp: new Date(),
+      mode: 'chat'
+    },
+    {
+      id: '3',
+      sender: 'agent',
+      text: "📊 Check Balance\nTo check your balance, simply ask:\n'what's my eth balance'",
+      timestamp: new Date(),
+      mode: 'chat'
+    },
+    {
+      id: '4',
+      sender: 'agent',
+      text: "🔄 Swap Tokens\nTo exchange tokens, use the format:\n'swap 0.0001 eth for lsk'",
+      timestamp: new Date(),
+      mode: 'chat'
+    },
+    {
+      id: '5',
+      sender: 'agent',
+      text: "🌉 Bridge Assets\nTo move assets between networks:\n'bridge 0.001 eth from arbitrum'",
+      timestamp: new Date(),
+      mode: 'chat'
+    },
+    {
+      id: '6',
+      sender: 'agent',
+      text: "💡 You can also ask me questions about Lisk's ecosystem, governance, or technical details!",
       timestamp: new Date(),
       mode: 'chat'
     }
