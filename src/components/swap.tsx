@@ -123,7 +123,7 @@ import { isWrapOperation } from '../utils';
     setError(null);
     
     try {
-      const response = await fetch('https://canoe.icarus.tools/market/usor/swap_quote', {
+      const response = await fetch('/api/canoe/market/usor/swap_quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

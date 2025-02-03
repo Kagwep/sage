@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/canoe/:path*",
+        "destination": "https://canoe.icarus.tools/:path*"
+      }
+    ]
+  }
