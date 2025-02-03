@@ -191,7 +191,7 @@ import { isWrapOperation } from '../utils';
         signingRequest: quote.signingRequest
       };
 
-      const response = await fetch('https://canoe.icarus.tools/market/usor/execution_information', {
+      const response = await fetch('/api/canoe/market/usor/execution_information', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
