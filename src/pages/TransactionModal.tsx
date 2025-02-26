@@ -1,6 +1,9 @@
 "use client"
 
 import React, { useState } from 'react';
+import { usePublicClient } from 'wagmi';
+import { useSupportedAcrossChains } from '../hooks/useSupportedAcrossChains';
+import { TokenInfo } from '@across-protocol/app-sdk';
 
 // Simplified token interface
 interface Token {
@@ -9,8 +12,10 @@ interface Token {
   logoURI?: string;
 }
 
+
 // Simplified utility function
-export const findTokenBySymbol = (symbol: string, tokens: Token[]) => {
+export const findTokenBySymbol = (symbol: string, tokens: TokenInfo[]) => {
+  console.log(symbol)
   return tokens.find(token => 
     token.symbol.toLowerCase() === symbol.toLowerCase()
   );
@@ -27,14 +32,14 @@ const copyToClipboard = async (text: string) => {
 };
 
 // Simplified TokenDisplay component
-const TokenDisplay = ({ symbol, tokens }: { symbol: string, tokens: Token[] }) => {
+const TokenDisplay = ({ symbol, tokens }: { symbol: string, tokens: TokenInfo[] }) => {
   const token = findTokenBySymbol(symbol, tokens);
   
   return (
     <div className="flex items-center gap-2">
-      {token?.logoURI && (
+      {token?.logoUrl && (
         <img 
-          src={token.logoURI} 
+          src={token.logoUrl} 
           alt={symbol}
           className="w-5 h-5 rounded-full"
         />
@@ -77,6 +82,16 @@ const TransactionModal = ({
 }) => {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const publicClient = usePublicClient();
+  const chain = publicClient.chain;
+
+
+    const { supportedChains } = useSupportedAcrossChains({});
+  
+    // Fixed destination chain (Lisk)
+    const destinationChain = supportedChains?.find(chain => chain.chainId === 1135);
+
+    const tokensUpdated = destinationChain?.inputTokens ?? [];
 
   const handleCopy = async (text: string) => {
     const success = await copyToClipboard(text);
@@ -135,13 +150,14 @@ const TransactionModal = ({
 
     switch (action) {
       case 'transfer':
+        
         return (
           <div className="divide-y divide-gray-100">
             <DetailRow label="From">
               <AddressDisplay address={completion.address} />
             </DetailRow>
             <DetailRow label="Token">
-              <TokenDisplay symbol={completion.token1} tokens={tokens} />
+              <TokenDisplay symbol={completion.token1} tokens={tokensUpdated} />
             </DetailRow>
             <DetailRow label="Amount">
               <TokenAmount amount={completion.amount} symbol={completion.token1} />
@@ -153,10 +169,10 @@ const TransactionModal = ({
         return (
           <div className="divide-y divide-gray-100">
             <DetailRow label="From Token">
-              <TokenDisplay symbol={completion.token1} tokens={tokens} />
+              <TokenDisplay symbol={completion.token1} tokens={tokensUpdated} />
             </DetailRow>
             <DetailRow label="To Token">
-              <TokenDisplay symbol={completion.token2} tokens={tokens} />
+              <TokenDisplay symbol={completion.token2} tokens={tokensUpdated} />
             </DetailRow>
             <DetailRow label="Amount">
               <TokenAmount amount={completion.amount} symbol={completion.token1} />
@@ -168,7 +184,7 @@ const TransactionModal = ({
         return (
           <div className="divide-y divide-gray-100">
             <DetailRow label="From Token">
-              <TokenDisplay symbol={completion.token1} tokens={tokens} />
+              <TokenDisplay symbol={completion.token1} tokens={tokensUpdated} />
             </DetailRow>
             <DetailRow label="From Chain">
               <p> {completion.chain}</p>
@@ -180,10 +196,11 @@ const TransactionModal = ({
         );
 
       case 'balance':
+        console.log(completion)
         return (
           <div className="divide-y divide-gray-100">
             <DetailRow label="Token">
-              <TokenDisplay symbol={completion.token1} tokens={tokens} />
+              <TokenDisplay symbol={completion.token1} tokens={tokensUpdated} />
             </DetailRow>
           </div>
         );
