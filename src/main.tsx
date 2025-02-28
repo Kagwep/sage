@@ -16,19 +16,9 @@ import './index.css';
 // Mock the environment in case, we are outside Telegram.
 import './mockEnv.ts';
 
-try {
-
-  init(retrieveLaunchParams().startParam === 'debug' || import.meta.env.DEV);
-
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <App />
-      <Toaster position="top-right" reverseOrder={false} />
-    </StrictMode>,
-  )
-  
-
-}catch {
-  createRoot(document.getElementById('root')!).render(<EnvUnsupported/>);
-}
-
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+    <Toaster position="top-right" reverseOrder={false} />
+  </StrictMode>,
+)
