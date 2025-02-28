@@ -2,6 +2,7 @@
 import { LogOut, Wallet } from 'lucide-react';
 import { useAccount, useDisconnect } from 'wagmi';
 
+
 const Home = () => {
   const { address, isConnected, connector } = useAccount();
   const { disconnectAsync } = useDisconnect();

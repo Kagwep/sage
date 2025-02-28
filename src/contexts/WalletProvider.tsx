@@ -4,6 +4,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppKitNetwork } from '@reown/appkit/networks'
 import { supportedNetworks } from '../constants'
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 
 // Create Query Client
 const queryClient = new QueryClient()
@@ -14,9 +15,9 @@ const projectId = import.meta.env.VITE_PROJECT_ID
 // App metadata
 const metadata = {
   name: 'Sage',
-  description: 'Your App Description',
-  url: 'Chat, swap, and manage assets with ease',
-  icons: ['https://yourapp.com/icon.png']
+  description: 'Chat, swap, and manage assets with ease',
+  url: 'https://sage-dusky.vercel.app/',
+  icons: ['https://sage-dusky.vercel.app/link.png']
 }
 
 // Configure networks using MAINNET_SUPPORTED_CHAINS
@@ -47,7 +48,9 @@ export function WalletProvider({ children } : {children: any}) {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider>
         {children}
+        </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )
